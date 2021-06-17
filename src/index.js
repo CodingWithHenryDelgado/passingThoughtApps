@@ -1,17 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { AddThoughtForm } from './AddThoughtForm';
+import { Thought } from './Thought.js';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function App() {
+  const [thoughts, setThoughts] = useState([{}]);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  const addThought = (thoughts) => {
+    setThoughts((prevThoughts) => [thoughts, ...prevThoughts]);
+  };
+
+  const removeThought = (thoughtIdToRemove) => {
+    setThoughts((thoughts) => thoughts.filter((thought) => thought.id !== thoughtIdToRemove)
+    );
+  };
+
+  return (
+    <div className="App">
+      <header>
+        <h1>Passing Thoughts</h1>
+      </header>
+      <main>
+        <AddThoughtForm addThought={addThought}/>
+        <ul className="thoughts">
+          {thoughts.map((thought) => (
+            <Thought 
+              key={thought.id} 
+              thought={thought} 
+              removeThought={removeThought}
+            />
+          ))}
+        </ul>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('app'));
